@@ -1,10 +1,6 @@
-FROM artifactory.six-group.net/sdbi/rhel:latest
+FROM artifactory.six-group.net/sdbi/rhel
 
 MAINTAINER HAKA6-Pacemakers <HAKA6-Pacemakers@six-group.com>
-
-ARG SIX_JAVA_BASE_VERSION
-ARG SIX_JAVA_VERSION
-ARG SIX_JAVA_PACKAGE=server-jre
 
 ENV JAVA_HOME="/opt/java" \
     SIX_JAVA_VERSION=${SIX_JAVA_VERSION} \
