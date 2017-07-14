@@ -28,8 +28,6 @@ RUN cd /tmp \
   && mv UnlimitedJCEPolicyJDK*/*.jar $JAVA_HOME/jre/lib/security \
   && rm /tmp/* -Rf \
   && sed -r -i "s/securerandom\.source=.*/securerandom\.source=file:\/dev\/urandom/g" $JAVA_HOME/jre/lib/security/java.security \
-  && chown -R java /opt/jdk* \
-  && chown -R java $JAVA_HOME \
   && fix-permissions.sh /opt/jdk* \
   && fix-permissions.sh $JAVA_HOME 
 
