@@ -1,0 +1,39 @@
+FROM artifactory.six-group.net/sdbi/rhel:latest
+
+MAINTAINER HAKA6-Pacemakers <HAKA6-Pacemakers@six-group.com>
+
+ARG SIX_JAVA_BASE_VERSION
+ARG SIX_JAVA_VERSION
+ARG SIX_JAVA_PACKAGE=server-jre
+
+ENV JAVA_HOME="/opt/java" \
+    SIX_JAVA_VERSION=${SIX_JAVA_VERSION} \
+    SIX_JAVA_PACKAGE=${SIX_JAVA_PACKAGE}
+
+ENV PATH="${JAVA_HOME}/bin:$PATH"
+
+LABEL six.sdbi.java.version="${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}" \
+      six.sdbi.java.jce_policy="true" \
+      six.sdbi.java.securerandom="urandom"
+
+RUN cd /tmp \
+  && export VERSION_NAME=${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}u${SIX_JAVA_UPDATE} \
+  && wget --progress=bar:force -c \
+     -O "jdk.tar.gz" \
+     "https://artifactory.six-group.net/artifactory/generic-release/oracle/java/${SIX_JAVA_BASE_VERSION}/${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}-linux-x64.tar.gz" \
+  && tar zxf jdk.tar.gz \
+  && rm -f jdk.tar.gz \
+  && mv /tmp/jdk* /opt \
+  && ln -s /opt/jdk*/ $JAVA_HOME \
+  && wget --progress=bar:force -c \
+     -O "jce_policy.zip" \
+     "https://artifactory.six-group.net/artifactory/generic-release/oracle/java/${SIX_JAVA_BASE_VERSION}/jce_policy-${SIX_JAVA_BASE_VERSION}.zip" \
+  && unzip -qq jce_policy.zip -d /tmp \
+  && mv UnlimitedJCEPolicyJDK*/*.jar $JAVA_HOME/jre/lib/security \
+  && rm /tmp/* -Rf \
+  && sed -r -i "s/securerandom\.source=.*/securerandom\.source=file:\/dev\/urandom/g" $JAVA_HOME/jre/lib/security/java.security \
+  && chown -R java /opt/jdk* \
+  && chown -R java $JAVA_HOME \
+  && fix-permissions.sh /opt/jdk* \
+  && fix-permissions.sh $JAVA_HOME 
+
