@@ -20,8 +20,7 @@ RUN cd /tmp \
   && rm -f jdk.tar.gz \
   && mv /tmp/jdk* /opt \
   && ln -s /opt/jdk*/ $JAVA_HOME \
-  && wget --progress=bar:force -c \
-     -O "jce_policy.zip" \
+  && curl --fail --silent --show-error --output "jce_policy.zip" \
      "https://artifactory.six-group.net/artifactory/generic-release/oracle/java/${SIX_JAVA_BASE_VERSION}/jce_policy-${SIX_JAVA_BASE_VERSION}.zip" \
   && unzip -qq jce_policy.zip -d /tmp \
   && mv UnlimitedJCEPolicyJDK*/*.jar $JAVA_HOME/jre/lib/security \
