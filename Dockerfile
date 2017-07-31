@@ -14,8 +14,7 @@ LABEL six.sdbi.java.version="${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}" \
 
 RUN cd /tmp \
   && export VERSION_NAME=${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}u${SIX_JAVA_UPDATE} \
-  && wget --progress=bar:force -c \
-     -O "jdk.tar.gz" \
+  && curl --fail --silent --show-error --output "jdk.tar.gz" \
      "https://artifactory.six-group.net/artifactory/generic-release/oracle/java/${SIX_JAVA_BASE_VERSION}/${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}-linux-x64.tar.gz" \
   && tar zxf jdk.tar.gz \
   && rm -f jdk.tar.gz \
