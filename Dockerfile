@@ -29,3 +29,4 @@ RUN cd /tmp \
   && fix-permissions.sh /opt/jdk* \
   && fix-permissions.sh $JAVA_HOME 
 
+RUN yum list java-1.8.0-openjdk-headless --showduplicates -q
