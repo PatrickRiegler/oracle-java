@@ -12,7 +12,7 @@ LABEL six.sdbi.java.version="${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}" \
       six.sdbi.java.jce_policy="true" \
       six.sdbi.java.securerandom="urandom"
 
-RUN [[ ! ${SIX_JAVA_VERSION} =~ ^[0-9]{1,2}u[0-9]{3}$ ]] && echo "ERROR: 'SIX_JAVA_VERSION' must match pattern '^[0-9]{1,2}u[0-9]{3}$'" && exit 1 \
+RUN [[ ! ${SIX_JAVA_VERSION} =~ ^[0-9]{1,2}u[0-9]{3}$ ]] && echo "ERROR: 'SIX_JAVA_VERSION' ${SIX_JAVA_VERSION} must match pattern '^[0-9]{1,2}u[0-9]{3}$'" && exit 1 \
   && cd /tmp \
 # get base version from java version; substring before 'u'
   && export SIX_JAVA_BASE_VERSION=$( echo ${SIX_JAVA_VERSION} | cut -du -f1) \
