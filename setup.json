@@ -7,60 +7,40 @@
       "kind": "ImageStream",
       "apiVersion": "v1",
       "metadata": {
-        "name": "oracle-java-jdk"
-      }
-    },
-    {
-      "kind": "ImageStream",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "oracle-java-server-jre"
-      }
-    },
-    {
-      "kind": "ImageStream",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "oracle-java-build"
-      }
-    },
-    {
-      "kind": "ImageStream",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "jenkins-slave-image-mgmt",
+        "name": "oracle-java-jdk",
         "labels": {
-          "role": "jenkins-slave"
-        },
-        "annotations": {
-          "slave-label": "jenkins-slave-image-mgmt"
+          "sdbi": "oracle-java"
         }
-      },
-      "spec": {
-        "dockerImageRepository": "artifactory.six-group.net/sdbi/jenkins-slave-image-mgmt",
-        "tags": [
-          {
-            "name": "latest",
-            "annotations": null,
-            "from": {
-              "kind": "DockerImage",
-              "name": "artifactory.six-group.net/sdbi/jenkins-slave-image-mgmt"
-            },
-            "importPolicy": {
-              "scheduled": true
-            }
-          }
-        ]
+      }
+    },
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "oracle-java-server-jre",
+        "labels": {
+          "sdbi": "oracle-java"
+        }
+      }
+    },
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "oracle-java-build",
+        "labels": {
+          "sdbi": "oracle-java"
+        }
       }
     },
     {
       "kind": "BuildConfig",
       "apiVersion": "v1",
       "metadata": {
-        "labels": {
-          "name": "oracle-java-pipeline"
-        },
         "name": "oracle-java-pipeline",
+        "labels": {
+          "sdbi": "oracle-java"
+        },
         "annotations": {
           "pipeline.alpha.openshift.io/uses": "[{\"name\": \"jenkins\", \"kind\": \"DeploymentConfig\"}]"
         }
@@ -99,7 +79,10 @@
       "kind": "BuildConfig",
       "apiVersion": "v1",
       "metadata": {
-        "name": "oracle-java-build"
+        "name": "oracle-java-build",
+        "labels": {
+          "sdbi": "oracle-java"
+        }
       },
       "spec": {
         "runPolicy": "Serial",
