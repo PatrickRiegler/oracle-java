@@ -1,3 +1,8 @@
+properties([
+  buildDiscarder(logRotator(numToKeepStr: '5'))
+])
+
+
 buildOracleJavaImages("server-jre")
 buildOracleJavaImages("jdk")
 
