@@ -15,7 +15,7 @@ def buildOracleJavaImages(String type) {
         registry = sh returnStdout: true, script: "oc get is oracle-java-${type} --template='{{ .status.dockerImageRepository }}'"
     }
     for (i = 0; i < versions.length; i++) {
-        stage("Building ${type} images") {
+        stage("Build ${type} images") {
             node() {
                 openshiftBuild bldCfg: 'oracle-java-build', env: [[name: 'SIX_JAVA_VERSION', value: versions[i]], [name: 'SIX_JAVA_PACKAGE', value: type]], showBuildLogs: 'true', verbose: 'false', waitTime: '5', waitUnit: 'min'
                 openshiftTag srcStream: "oracle-java-build", srcTag: 'tmp', destStream: "oracle-java-${type}", destTag: versions[i]
