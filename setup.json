@@ -81,7 +81,18 @@
           "jenkinsPipelineStrategy": {
             "jenkinsfilePath": "Jenkinsfile"
           }
-        }
+        },
+        "triggers": [
+            {
+                "type": "ImageChange",
+                "imageChange": {
+                    "from": {
+                        "kind": "ImageStreamTag",
+                        "name": "six-rhel7:latest"
+                    }
+                }
+            }
+        ]
       }
     },
     {
