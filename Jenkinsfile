@@ -1,6 +1,3 @@
-// https://github.com/openshift/origin/issues/4198
-
-
 buildOracleJavaImages("server-jre")
 buildOracleJavaImages("jdk")
 
@@ -25,11 +22,11 @@ def buildOracleJavaImages(String type) {
 
                 withCredentials([string(credentialsId: 'SECRET_ARTIFACTORY_TOKEN', variable: 'ARTIFACTORY_TOKEN')]) {
                     sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:${versions[i]}"
-                    sh "promoteToArtifactory.sh -k ${env.ARTIFACTORY_TOKEN} -i sdbi/oracle-java-${type}-8 -t ${versions[i]} -r sdbi-docker-release-local"
+                    sh "promoteToArtifactory.sh -k ${env.ARTIFACTORY_TOKEN} -i sdbi/oracle-java-${type}-8 -t ${versions[i]} -r sdbi-docker-release-local -c"
 
                     if (i == 0) {
                         sh "skopeoCopy.sh -f ${registry}:latest -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:latest"
-                        sh "promoteToArtifactory.sh -k ${env.ARTIFACTORY_TOKEN} -i sdbi/oracle-java-${type}-8 -t latest -r sdbi-docker-release-local"
+                        sh "promoteToArtifactory.sh -k ${env.ARTIFACTORY_TOKEN} -i sdbi/oracle-java-${type}-8 -t latest -r sdbi-docker-release-local -c"
                     }
                 }
             }
