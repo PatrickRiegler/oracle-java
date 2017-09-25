@@ -17,7 +17,7 @@ def buildOracleJavaImages(String type) {
         }
         for (i = 0; i < versions.length; i++) {
             node() {
-                openshiftBuild bldCfg: 'oracle-java-build', env: [[name: 'SIX_JAVA_VERSION', value: versions[i]], [name: 'SIX_JAVA_PACKAGE', value: type]], showBuildLogs: 'true', verbose: 'false', waitTime: '5', waitUnit: 'min'
+                openshiftBuild bldCfg: 'oracle-java-9-build', env: [[name: 'SIX_JAVA_VERSION', value: versions[i]], [name: 'SIX_JAVA_PACKAGE', value: type]], showBuildLogs: 'true', verbose: 'false', waitTime: '5', waitUnit: 'min'
                 openshiftTag srcStream: "oracle-java-build", srcTag: 'tmp-9', destStream: "oracle-java-${type}", destTag: versions[i]
                 if (i == 0) {
                     openshiftTag srcStream: "oracle-java-build", srcTag: 'tmp-9', destStream: "oracle-java-${type}", destTag: "latest"
