@@ -25,13 +25,13 @@ def buildOracleJavaImages(String type) {
             }
             node('jenkins-slave-image-mgmt') {
 
-                withCredentials([string(credentialsId: 'SECRET_ARTIFACTORY_TOKEN', variable: 'ARTIFACTORY_TOKEN')]) {
+                withCredentials([string(credentialsId: 'SECRET_ARTIFACTORY_TOKEN', variable: 'ARTIFACTORY_API_KEY')]) {
                     sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:${versions[i]}"
-                    sh "promoteToArtifactory.sh -k ${env.ARTIFACTORY_TOKEN} -i sdbi/oracle-java-${type}-8 -t ${versions[i]} -r sdbi-docker-release-local -c"
+                    sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-8 -t ${versions[i]} -r sdbi-docker-release-local -c"
 
                     if (i == 0) {
                         sh "skopeoCopy.sh -f ${registry}:latest -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:latest"
-                        sh "promoteToArtifactory.sh -k ${env.ARTIFACTORY_TOKEN} -i sdbi/oracle-java-${type}-8 -t latest -r sdbi-docker-release-local -c"
+                        sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-8 -t latest -r sdbi-docker-release-local -c"
                     }
                 }
             }
