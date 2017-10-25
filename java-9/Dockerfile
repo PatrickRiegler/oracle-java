@@ -16,7 +16,7 @@ RUN  cd /tmp \
   && export SIX_JAVA_BASE_VERSION=$( echo ${SIX_JAVA_VERSION} | cut -du -f1) \
   && export VERSION_NAME=${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}u${SIX_JAVA_UPDATE} \
   && curl --fail --silent --show-error --output "jdk.tar.gz" \
-     "https://artifactory.six-group.net/artifactory/generic-release/oracle/java/${SIX_JAVA_BASE_VERSION}/${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}-linux-x64.tar.gz" \
+     "https://artifactory.six-group.net/artifactory/generic-release/oracle/java/${SIX_JAVA_BASE_VERSION}/${SIX_JAVA_PACKAGE}-${SIX_JAVA_VERSION}_linux-x64.tar.gz" \
   && tar zxf jdk.tar.gz \
   && rm -f jdk.tar.gz \
   && mv /tmp/jdk* /opt \

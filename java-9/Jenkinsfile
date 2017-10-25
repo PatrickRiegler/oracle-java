@@ -1,7 +1,19 @@
 properties([
-  buildDiscarder(logRotator(numToKeepStr: '5'))
+        buildDiscarder(logRotator(numToKeepStr: '5')),
+        pipelineTriggers([pollSCM('H/15 * * * *')])
 ])
 
+
+def jobContext = [:]
+
+node() {
+    stage("Build images") {
+        // generate version number
+        jobContext.currentBuildVersion = sh(returnStdout: true, script: 'date +%Y%m%d%H%M%S  -u').trim()
+
+        echo "${jobContext}"
+    }
+}
 
 buildOracleJavaImages("server-jre")
 buildOracleJavaImages("jdk")
@@ -10,14 +22,15 @@ def buildOracleJavaImages(String type) {
     stage("Build ${type} images") {
         def versions
         def registry
+        def artifactoryType = type.replaceAll('-', '')
         node() {
             sh 'curl --fail --silent --show-error --output jq https://artifactory.six-group.net/artifactory/generic-release/jq/1.5/jq-linux64 && chmod 755 jq'
-            versions = findAvailableVersions(type)
+            versions = findAvailableVersions(artifactoryType)
             registry = sh returnStdout: true, script: "oc get is oracle-java-${type} --template='{{ .status.dockerImageRepository }}'"
         }
         for (i = 0; i < versions.length; i++) {
             node() {
-                openshiftBuild bldCfg: 'oracle-java-9-build', env: [[name: 'SIX_JAVA_VERSION', value: versions[i]], [name: 'SIX_JAVA_PACKAGE', value: type]], showBuildLogs: 'true', verbose: 'false', waitTime: '5', waitUnit: 'min'
+                openshiftBuild bldCfg: 'oracle-java-9-build', env: [[name: 'SIX_JAVA_VERSION', value: versions[i]], [name: 'SIX_JAVA_PACKAGE', value: artifactoryType]], showBuildLogs: 'true', verbose: 'false', waitTime: '5', waitUnit: 'min'
                 openshiftTag srcStream: "oracle-java-build", srcTag: 'tmp-9', destStream: "oracle-java-${type}", destTag: versions[i]
                 if (i == 0) {
                     openshiftTag srcStream: "oracle-java-build", srcTag: 'tmp-9', destStream: "oracle-java-${type}", destTag: "latest"
@@ -27,7 +40,9 @@ def buildOracleJavaImages(String type) {
 
                 withCredentials([string(credentialsId: 'SECRET_ARTIFACTORY_TOKEN', variable: 'ARTIFACTORY_API_KEY')]) {
                     sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${versions[i]}"
+                    sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${jobContext.currentBuildVersion}"
                     sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${versions[i]} -r sdbi-docker-release-local -c"
+                    sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${jobContext.currentBuildVersion} -r sdbi-docker-release-local -c"
 
                     if (i == 0) {
                         sh "skopeoCopy.sh -f ${registry}:latest -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:latest"
@@ -42,6 +57,6 @@ def buildOracleJavaImages(String type) {
 
 def findAvailableVersions(String type) {
     sh 'curl --fail --silent --show-error --output versions.json https://artifactory.six-group.net/artifactory/api/storage/generic-release/oracle/java/9/'
-    result = sh returnStdout: true, script: "cat versions.json | ./jq -r '.children | sort_by(.uri) | reverse [] | select(.uri | contains(\"${type}\")) .uri | sub(\"${type}\"; \"\") | split(\"-\")[1]'"
+    result = sh returnStdout: true, script: "cat versions.json | ./jq -r '.children | sort_by(.uri) | reverse [] | select(.uri | contains(\"${type}-9.\")) .uri | sub(\"${type}\"; \"\") | split(\"-\")[1]| split(\"_\")[0]'"
     result.split("\n")
 }
