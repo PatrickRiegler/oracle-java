@@ -37,17 +37,14 @@ def buildOracleJavaImages(String type, jobContext) {
                 }
             }
             imageMgmtNode() {
+                sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${versions[i]}"
+                sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${jobContext.currentBuildVersion}"
+                sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${versions[i]} -r sdbi-docker-release-local -c"
+                sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${jobContext.currentBuildVersion} -r sdbi-docker-release-local -c"
 
-                withCredentials([string(credentialsId: 'SECRET_ARTIFACTORY_TOKEN', variable: 'ARTIFACTORY_API_KEY')]) {
-                    sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${versions[i]}"
-                    sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${jobContext.currentBuildVersion}"
-                    sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${versions[i]} -r sdbi-docker-release-local -c"
-                    sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${jobContext.currentBuildVersion} -r sdbi-docker-release-local -c"
-
-                    if (i == 0) {
-                        sh "skopeoCopy.sh -f ${registry}:latest -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:latest"
-                        sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t latest -r sdbi-docker-release-local -c"
-                    }
+                if (i == 0) {
+                    sh "skopeoCopy.sh -f ${registry}:latest -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:latest"
+                    sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t latest -r sdbi-docker-release-local -c"
                 }
             }
         }
@@ -60,7 +57,6 @@ def findAvailableVersions(String type) {
     result = sh returnStdout: true, script: "cat versions.json | ./jq -r '.children | sort_by(.uri) | reverse [] | select(.uri | contains(\"${type}-9.\")) .uri | sub(\"${type}\"; \"\") | split(\"-\")[1]| split(\"_\")[0]'"
     result.split("\n")
 }
-
 
 
 def imageMgmtNode(Closure body) {
