@@ -7,7 +7,7 @@ properties([
 def jobContext = [:]
 
 node() {
-    stage("Build images") {
+    stage("Setup") {
         // generate version number
         jobContext.currentBuildVersion = sh(returnStdout: true, script: 'date +%Y%m%d%H%M%S  -u').trim()
 
