@@ -15,10 +15,10 @@ node() {
     }
 }
 
-buildOracleJavaImages("server-jre")
-buildOracleJavaImages("jdk")
+buildOracleJavaImages("server-jre", jobContext)
+buildOracleJavaImages("jdk", jobContext)
 
-def buildOracleJavaImages(String type) {
+def buildOracleJavaImages(String type, jobContext) {
     stage("Build ${type} images") {
         def versions
         def registry
