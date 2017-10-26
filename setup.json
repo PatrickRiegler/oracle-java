@@ -37,12 +37,10 @@
       "kind": "BuildConfig",
       "apiVersion": "v1",
       "metadata": {
-        "name": "oracle-java-pipeline",
+        "name": "oracle-java-8-pipeline",
         "labels": {
-          "sdbi": "oracle-java"
-        },
-        "annotations": {
-          "pipeline.alpha.openshift.io/uses": "[{\"name\": \"jenkins\", \"kind\": \"DeploymentConfig\"}]"
+          "sdbi": "oracle-java",
+          "java-version": "8"
         }
       },
       "spec": {
@@ -50,7 +48,7 @@
           "type": "Git",
           "git": {
             "uri": "ssh://git@stash.six-group.net:22/sdbi/oracle-java.git",
-            "ref": "master"
+            "ref": "develop"
           },
           "sourceSecret": {
             "name": "bitbucket-secret"
@@ -59,7 +57,7 @@
         "strategy": {
           "type": "JenkinsPipeline",
           "jenkinsPipelineStrategy": {
-            "jenkinsfilePath": "Jenkinsfile"
+            "jenkinsfilePath": "java-8/Jenkinsfile"
           }
         },
         "triggers": [
@@ -79,9 +77,10 @@
       "kind": "BuildConfig",
       "apiVersion": "v1",
       "metadata": {
-        "name": "oracle-java-build",
+        "name": "oracle-java-8-build",
         "labels": {
-          "sdbi": "oracle-java"
+          "sdbi": "oracle-java",
+          "java-version": "8"
         }
       },
       "spec": {
@@ -89,7 +88,8 @@
         "source": {
           "type": "Git",
           "git": {
-            "uri": "ssh://git@stash.six-group.net:22/sdbi/oracle-java.git"
+            "uri": "ssh://git@stash.six-group.net:22/sdbi/oracle-java.git",,
+            "ref": "develop"
           },
           "sourceSecret": {
             "name": "bitbucket-secret"
@@ -102,13 +102,95 @@
               "kind": "ImageStreamTag",
               "name": "six-rhel7:latest"
             },
-            "forcePull": true
+            "forcePull": true,
+            "dockerfilePath": "java-8/Dockerfile"
           }
         },
         "output": {
           "to": {
             "kind": "ImageStreamTag",
-            "name": "oracle-java-build:tmp"
+            "name": "oracle-java-build:tmp-8"
+          }
+        }
+      }
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "oracle-java-9-pipeline",
+        "labels": {
+          "sdbi": "oracle-java",
+          "java-version": "9"
+        }
+      },
+      "spec": {
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "ssh://git@stash.six-group.net:22/sdbi/oracle-java.git",
+            "ref": "develop"
+          },
+          "sourceSecret": {
+            "name": "bitbucket-secret"
+          }
+        },
+        "strategy": {
+          "type": "JenkinsPipeline",
+          "jenkinsPipelineStrategy": {
+            "jenkinsfilePath": "java-9/Jenkinsfile"
+          }
+        },
+        "triggers": [
+            {
+                "type": "ImageChange",
+                "imageChange": {
+                    "from": {
+                        "kind": "ImageStreamTag",
+                        "name": "six-rhel7:latest"
+                    }
+                }
+            }
+        ]
+      }
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "oracle-java-9-build",
+        "labels": {
+          "sdbi": "oracle-java",
+          "java-version": "9"
+        }
+      },
+      "spec": {
+        "runPolicy": "Serial",
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "ssh://git@stash.six-group.net:22/sdbi/oracle-java.git",
+            "ref": "develop"
+          },
+          "sourceSecret": {
+            "name": "bitbucket-secret"
+          }
+        },
+        "strategy": {
+          "type": "Docker",
+          "dockerStrategy": {
+            "from": {
+              "kind": "ImageStreamTag",
+              "name": "six-rhel7:latest"
+            },
+            "forcePull": true,
+            "dockerfilePath": "java-9/Dockerfile"
+          }
+        },
+        "output": {
+          "to": {
+            "kind": "ImageStreamTag",
+            "name": "oracle-java-build:tmp-9"
           }
         }
       }
