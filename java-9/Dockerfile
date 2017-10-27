@@ -27,3 +27,4 @@ RUN  cd /tmp \
   && fix-permissions.sh /opt/jdk* \
   && fix-permissions.sh $JAVA_HOME
 
+LABEL six.sdbi.java.build="${SIX_BUILD_VERSION}
