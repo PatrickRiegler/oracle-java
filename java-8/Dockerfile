@@ -29,5 +29,7 @@ RUN  cd /tmp \
   && rm /tmp/* -Rf \
   && sed -r -i "s/securerandom\.source=.*/securerandom\.source=file:\/dev\/urandom/g" $JAVA_HOME/jre/lib/security/java.security \
   && fix-permissions.sh /opt/jdk* \
-  && fix-permissions.sh $JAVA_HOME 
+  && fix-permissions.sh $JAVA_HOME
+
+LABEL six.sdbi.java.build="${SIX_BUILD_VERSION}
 

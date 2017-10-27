@@ -30,20 +30,18 @@ def buildOracleJavaImages(String type, jobContext) {
         }
         for (i = 0; i < versions.length; i++) {
             node() {
-                openshiftBuild bldCfg: 'oracle-java-9-build', env: [[name: 'SIX_JAVA_VERSION', value: versions[i]], [name: 'SIX_JAVA_PACKAGE', value: artifactoryType]], showBuildLogs: 'true', verbose: 'false', waitTime: '5', waitUnit: 'min'
+                openshiftBuild bldCfg: 'oracle-java-9-build', env: [[name: 'SIX_JAVA_VERSION', value: versions[i]], [name: 'SIX_JAVA_PACKAGE', value: artifactoryType], [name: 'SIX_BUILD_VERSION', value: jobContext.currentBuildVersion]], showBuildLogs: 'true', verbose: 'false', waitTime: '5', waitUnit: 'min'
                 openshiftTag srcStream: "oracle-java-build", srcTag: 'tmp-9', destStream: "oracle-java-${type}", destTag: versions[i]
-                if (i == 0) {
-                    openshiftTag srcStream: "oracle-java-build", srcTag: 'tmp-9', destStream: "oracle-java-${type}", destTag: "latest"
-                }
             }
             imageMgmtNode() {
                 sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${versions[i]}"
-                sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:${jobContext.currentBuildVersion}"
                 sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${versions[i]} -r sdbi-docker-release-local -c"
+
+                sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:${jobContext.currentBuildVersion}"
                 sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t ${jobContext.currentBuildVersion} -r sdbi-docker-release-local -c"
 
                 if (i == 0) {
-                    sh "skopeoCopy.sh -f ${registry}:latest -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:latest"
+                    sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-9:latest"
                     sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-9 -t latest -r sdbi-docker-release-local -c"
                 }
             }
