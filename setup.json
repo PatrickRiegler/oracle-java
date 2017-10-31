@@ -11,6 +11,30 @@
         "labels": {
           "sdbi": "oracle-java"
         }
+      },
+      "spec": {
+        "tags": [
+          {
+            "name": "8-latest",
+            "from": {
+              "kind": "DockerImage",
+              "name": "artifactory.six-group.net/sdbi/oracle-java-jdk-8:latest"
+            },
+            "importPolicy": {
+              "scheduled": true
+            }
+          },
+          {
+            "name": "9-latest",
+            "from": {
+              "kind": "DockerImage",
+              "name": "artifactory.six-group.net/sdbi/oracle-java-jdk-9:latest"
+            },
+            "importPolicy": {
+              "scheduled": true
+            }
+          }
+        ]
       }
     },
     {
@@ -21,6 +45,30 @@
         "labels": {
           "sdbi": "oracle-java"
         }
+      },
+      "spec": {
+        "tags": [
+          {
+            "name": "8-latest",
+            "from": {
+              "kind": "DockerImage",
+              "name": "artifactory.six-group.net/sdbi/oracle-java-server-jre-8:latest"
+            },
+            "importPolicy": {
+              "scheduled": true
+            }
+          },
+          {
+            "name": "9-latest",
+            "from": {
+              "kind": "DockerImage",
+              "name": "artifactory.six-group.net/sdbi/oracle-java-server-jre-9:latest"
+            },
+            "importPolicy": {
+              "scheduled": true
+            }
+          }
+        ]
       }
     },
     {
@@ -61,15 +109,15 @@
           }
         },
         "triggers": [
-            {
-                "type": "ImageChange",
-                "imageChange": {
-                    "from": {
-                        "kind": "ImageStreamTag",
-                        "name": "six-rhel7:latest"
-                    }
-                }
+          {
+            "type": "ImageChange",
+            "imageChange": {
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "six-rhel7:latest"
+              }
             }
+          }
         ]
       }
     },
@@ -142,15 +190,15 @@
           }
         },
         "triggers": [
-            {
-                "type": "ImageChange",
-                "imageChange": {
-                    "from": {
-                        "kind": "ImageStreamTag",
-                        "name": "six-rhel7:latest"
-                    }
-                }
+          {
+            "type": "ImageChange",
+            "imageChange": {
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "six-rhel7:latest"
+              }
             }
+          }
         ]
       }
     },
