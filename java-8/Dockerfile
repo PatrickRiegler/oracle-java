@@ -4,7 +4,8 @@ MAINTAINER HAKA6-Pacemakers <HAKA6-Pacemakers@six-group.com>
 
 ENV JAVA_HOME="/opt/java" \
     SIX_JAVA_VERSION=${SIX_JAVA_VERSION} \
-    SIX_JAVA_PACKAGE=${SIX_JAVA_PACKAGE}
+    SIX_JAVA_PACKAGE=${SIX_JAVA_PACKAGE} \
+    JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
 
 ENV PATH="${JAVA_HOME}/bin:$PATH"
 
