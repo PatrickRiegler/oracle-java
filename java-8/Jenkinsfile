@@ -28,7 +28,7 @@ def buildOracleJavaImages(String type, jobContext) {
                 sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:${versions[i]}"
                 sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-8 -t ${versions[i]} -r sdbi-docker-release-local -c"
 
-                sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:${jobContext.currentBuildVersion}"
+                sh "skopeoCopy.sh -f ${registry}:${versions[i]} -t artifactory.six-group.net/sdbi/oracle-java-${type}-8:${versions[i]}-${jobContext.currentBuildVersion}"
                 sh "promoteToArtifactory.sh -i sdbi/oracle-java-${type}-8 -t ${jobContext.currentBuildVersion} -r sdbi-docker-release-local -c"
 
                 if (i == 0) {
