@@ -1,4 +1,4 @@
-FROM artifactory.six-group.net/sdbi/rhel
+FROM artifactory.six-group.net/sdbi/six-rhel7
 
 MAINTAINER HAKA6-Pacemakers <HAKA6-Pacemakers@six-group.com>
 
